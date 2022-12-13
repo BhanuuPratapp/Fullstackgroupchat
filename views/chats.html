@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>message</title>
+    <style>
+        main{
+            padding: 1rem;
+        }
+        .main-header{
+            width: 100%;
+            height: 3.5rem;
+            background-color:rgb(255, 102, 0);
+            padding: 0 1.5rem;
+        }
+        body{
+            padding:0;
+            margin:0;
+            font-family: sans-serif;
+        }
+        .main-header-item-list{
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        
+        }
+        .main-header-items{
+            margin: 0 1rem;
+            padding: 0;
+        }
+        .main-header-items a{
+            text-decoration: none;
+            color:rgb(15, 7, 1);
+        }
+        .main-header-nav{
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+     .main-header-items a:hover,
+     .main-header-items a:active,
+     .main-header-items a.active{
+        color:rgba(21, 0, 255, 0.534)
+     }
+    </style>
+</head>
+<body>
+   <header class="main-header">
+    <nav class="main-header-nav">
+        <ul class="main-header-item-list">
+            <li class="main-header-items"><a class="active" href="/login">Login Page</a></li>
+            <li class="main-header-items"><a href="/">message</a></li>
+        </ul>
+    </nav>
+   </header> 
+   <main>
+    
+
+        <p>
+          All messages
+        </p>
+         <form action="/" onsubmit="document.getElementById('username1').value=localStorage.getItem('username')" method = "POST"><input type ="text" id="username"name ="message"><input type="hidden" id="username1"name="username" placeHolder="message"><button type ="submit">Send</button> 
+
+   </main>
+
+</body>
+</html>
