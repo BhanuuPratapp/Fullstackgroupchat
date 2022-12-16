@@ -14,13 +14,30 @@
       <button type="submit" id="sdmsg">send message</button>
       <input type="text" placeholder="group number"id="groupid" />
     </form>
+       
+  <form id="imageForm">
+    <input type="file" id="imageInput" multiple/>
+    <button type="submit">Share</button>
+  </form>
+  <!--form action="http://localhost:9000/sharefiles" method="POST" enctype="multipart/form-data">
+    <input type="file" name="imageInput" />
+    <button>Submit</button>
+  </form-->
+  
     <div id="msgsgroups">
       <div id="groups"></div>
 
+     
       <div class="msgs" id="msgs">
         <h1>Messages:</h1>
       </div>
+
+      <div id="filesgroups">
+        <h1>SharedFiles:</h1>
+        </div>
+  
     </div>
+   
     <div id="creategroups">
         <form action="">
           <label for="groupname">Group Name:</label>

@@ -3,10 +3,67 @@ let getgroupmessages
 let getmessages
 const sendmsg = document.getElementById("sdmsg");
 const token = localStorage.getItem("token");
+
+
+const imageForm = document.querySelector("#imageForm")
+const imageInput = document.querySelector("#imageInput")
+
+imageForm.addEventListener("submit",   event => {
+  event.preventDefault()
+  let file = imageInput.files;
+  console.log("file", file)
+  let formData = new FormData();
+for(let i=0;i<file.length;i++)
+{
+  console.log("file[i]",file[i])
+formData.append('file', file[i]);
+}
+console.log("formdata",formData)
+//console.log("formaaaaa",formData)
+//const file = imageInput.files[0];
+
+
+const groupId = document.getElementById("groupid").value;
+
+
+ fetch('http://localhost:9000/sharefiles', {
+  
+    method: 'POST',
+    body:
+      formData,
+     
+  
+    
+    
+      headers: { 'Authorization':  token,
+     'groupId': groupId
+    },
+  
+   // enctype:"multipart/form-data"
+   
+  
+})
+.then(resp => resp.json())
+   .then(data => {
+      if (data.errors) {
+         alert(data.errors)
+      }
+      else {
+         console.log(data)
+      }
+   })
+ 
+
+})
+
+
 sendmsg.addEventListener("click", (e) => {
   e.preventDefault();
   const message = document.getElementById("msginput").value;
+
   const groupid = document.getElementById("groupid").value;
+
+
 
   let msgdetails = {
     token: token,
@@ -14,10 +71,29 @@ sendmsg.addEventListener("click", (e) => {
     groupid: groupid,
   };
 
+  /*
+
+  axios.post('http://localhost:9000/sendmsg', 
+  
+    
+    formData,
+    msgdetails,{
+    
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      'Authorization':  token ,
+    }
+    */
+  
+   // enctype:"multipart/form-data"
+   
+  
   axios
-    .post("http://localhost:9000/sendmsg", msgdetails, {
+    .post("http://localhost:9000/sendmsg", msgdetails, 
+    {
       headers: { Authorization: token },
     })
+     
     .then(() => {
       document.getElementById("msginput").value = "";
       // nothing
@@ -26,6 +102,8 @@ sendmsg.addEventListener("click", (e) => {
 
 
 //setInterval(function() {
+
+
 
 window.addEventListener("DOMContentLoaded", () => {
     /*
@@ -44,10 +122,8 @@ window.addEventListener("DOMContentLoaded", () => {
   let lastid;
   if (lsdata == null) {
     lastid = 0;
-    console.log("lsdata", lsdata)
   } else {
     lastid = lsdata[lsdata.length - 1].msgid;
-    console.log("lastIdddddd", lastid)
   }
   let mergemsgs = [];
   axios
@@ -89,6 +165,45 @@ window.addEventListener("DOMContentLoaded", () => {
       }
     });
 },1000);
+})
+
+
+
+const fileupload = document.getElementById("filesgroups")
+
+window.addEventListener("DOMContentLoaded", () => {
+  
+  getsharedFiles = setInterval(function() {
+    
+axios.get("http://localhost:9000/getfilecontents",{
+  headers: { Authorization: token },
+}).then(res =>{
+  console.log("responsesssssssssss",res.data.result)
+  fileupload.innerHTML = '';
+  fileupload.innerHTML = '<h1>Shared Files</h1>'
+  for (let i = 0; i < res.data.result.length; i++) {
+    const filediv = document.createElement("div");
+    filediv.classList.add("msgdiv");
+    const name = document.createElement("div");
+    name.innerHTML = `<p>${res.data.result[i].name}:</p>`;
+    filediv.appendChild(name);
+    const filename = document.createElement("div");
+    filename.innerHTML = `<p>${res.data.result[i].filename}</p>`;
+   
+    filediv.appendChild(filename);
+    const url = document.createElement("div");
+    url.innerHTML = ` <a href="${res.data.result[i].url}" download>
+    Download
+</a>`;
+    filediv.appendChild(url);
+   
+
+    fileupload.appendChild(filediv)
+    
+  }
+
+}).catch(err => console.log(err))
+},1000)
 })
 
 function displaymsgs() {
@@ -141,6 +256,7 @@ function displaymsgs() {
 const creategroup = document.getElementById("cgp");
 creategroup.addEventListener("click", (e) => {
     clearInterval(getmessages);
+   clearInterval(getsharedFiles)
   e.preventDefault();
   const groupname = document.getElementById("gpname").value;
   let groupdetails = {
@@ -177,26 +293,104 @@ window.addEventListener("DOMContentLoaded", () => {
         }
       });
   });
+/*
+  const groupcontainer = document.getElementById("groups");
+
+  groupcontainer.addEventListener("click", (e) => {
+      clearInterval(getmessages);
+      clearInterval(getgroupmessages)
+      clearInterval(getsharedFiles)
+  
+  
+      getgroupmessages = setInterval(function() {
+  
+    const groupid = e.target.parentNode.id;
+  
+    document.getElementById("groupid").value = groupid;
+    axios
+      .get(`http://localhost:9000/getfiles/?gid=${groupid}`, {
+        headers: { Authorization: token },
+      })
+      .then((msgs) => {
+     console.log("msgssss", msgs)
+        
+        const grpmsgs = msgs.data;
+        const msgcontainer = document.getElementById("msgs");
+        msgcontainer.innerHTML = "";
+        fileupload.innerHTML = "";
+        msgcontainer.innerHTML = "<h1>Messages:</h1>";
+  
+        for (let i = 0; i < grpmsgs.length; i++) {
+          const msgdiv = document.createElement("div");
+          msgdiv.classList.add("msgdiv");
+          const name = document.createElement("div");
+          name.innerHTML = `<p>${grpmsgs[i].Username}:</p>`;
+          msgdiv.appendChild(name);
+          const msg = document.createElement("div");
+          msg.innerHTML = `<p>${grpmsgs[i].message}</p>`;
+          msgdiv.appendChild(msg);
+          msgcontainer.appendChild(msgdiv);
+        }
+        
+      });
+  },1000)
+  });
+
+
+*/
 
   const groupscontainer = document.getElementById("groups");
 
 groupscontainer.addEventListener("click", (e) => {
     clearInterval(getmessages);
     clearInterval(getgroupmessages)
+    clearInterval(getsharedFiles)
+
 
     getgroupmessages = setInterval(function() {
 
   const groupid = e.target.parentNode.id;
 
   document.getElementById("groupid").value = groupid;
+
+  axios
+  .get(`http://localhost:9000/getfiles/?gid=${groupid}`, {
+    headers: { Authorization: token },
+  })
+  .then((msgs) => {
+ console.log("msgssss", msgs)
+ const grpfiles = msgs.data;
+ fileupload.innerHTML = "";
+ fileupload.innerHTML =  "<h1>Shared Files:</h1>"
+
+ for (let i = 0; i < grpfiles.length; i++) {
+  const msgdiv = document.createElement("div");
+  msgdiv.classList.add("msgdiv");
+  const name = document.createElement("div");
+  name.innerHTML = `<p>${grpfiles[i].name}:</p>`;
+  msgdiv.appendChild(name);
+  const filename = document.createElement("div");
+  filename.innerHTML = `<p>${grpfiles[i].filename}</p>`;
+ 
+  msgdiv.appendChild(filename);
+  const msg = document.createElement("div");
+  msg.innerHTML = `<a href="${grpfiles[i].url}" download>
+  Download
+</a>`;
+  msgdiv.appendChild(msg);
+  fileupload.appendChild(msgdiv);
+}
+  })
   axios
     .get(`http://localhost:9000/getgroupmessages/?gid=${groupid}`, {
       headers: { Authorization: token },
     })
     .then((msgs) => {
       const grpmsgs = msgs.data;
+  
       const msgcontainer = document.getElementById("msgs");
       msgcontainer.innerHTML = "";
+    
       msgcontainer.innerHTML = "<h1>Messages:</h1>";
 
       for (let i = 0; i < grpmsgs.length; i++) {
@@ -211,8 +405,8 @@ groupscontainer.addEventListener("click", (e) => {
         msgcontainer.appendChild(msgdiv);
       }
     });
-},1000)
-});
+},1000);
+})
 
 const adduser = document.getElementById("adu");
 adu.addEventListener("click", (e) => {

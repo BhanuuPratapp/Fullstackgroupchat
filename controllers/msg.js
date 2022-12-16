@@ -1,10 +1,16 @@
 const express = require('express')
 const messagetable = require('../models/messages')
 const { Sequelize, Op } = require("sequelize");
+const uploadfile = require('../models/fileUpload')
+
+
+
+
 exports.sendmsg = async (req, res, next) => {
    try{
    
     const message = req.body.message;
+    console.log("messagessssssssssssssssssssssssssssssssss", message)
     const username = req.user.name;
     const groupid = req.body.groupid;
 
@@ -80,3 +86,44 @@ exports.getgroupmessages=async function(req,res){
   
   
   }
+
+
+  exports.getfiles=async function(req,res){
+    try{
+    const groupid=req.query.gid
+  
+    uploadfile
+      .findAll({where:{GroupId:groupid}})
+      .then((msgs) => {
+        res.json(msgs);
+      })
+      .catch((err) => console.log(err));
+    }
+    catch(err)
+    {
+        console.log("Error:", err);
+        res.status(500).json({Error: err})
+    }
+  }
+  /*
+  exports.file = async function(req, res, next){
+console.log("fileeeeeeeeeeeeeeeeeeeeee",req.body)
+
+  } 
+  */
+exports.filecontents = async(req, res, next) =>{
+
+try{
+  uploadfile.findAll({where:{GroupId:null}}).then((response) =>{
+    res.json({success:true, result:response})
+  })
+
+
+}
+catch(err)
+{
+  console.log(err)
+  res.status(500).json({success:false, error:err})
+}
+
+}

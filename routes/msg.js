@@ -8,5 +8,8 @@ router.post("/sendmsg", userauthentication.authenticate, messagecontroller.sendm
 router.get("/getmessages",  messagecontroller.getmessages)
 router.get("/getallmessages", messagecontroller.getallmessages);
 router.get("/getgroupmessages", userauthentication.authenticate, messagecontroller.getgroupmessages);
+router.get("/getfiles", userauthentication.authenticate, messagecontroller.getfiles);
+router.get("/getfilecontents", userauthentication.authenticate, messagecontroller.filecontents);
+
 
 module.exports = router;

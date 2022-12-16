@@ -16,6 +16,15 @@
     height:700px;
     margin-top: 20px;
 }
+
+#filesgroups{
+    border: 1px dotted black;
+    width: auto;
+    height:auto;
+    margin-left: 60px;
+    margin-top: 20px;
+    
+}
 #creategroups{
     border: 1px dotted black;
     width: auto;
